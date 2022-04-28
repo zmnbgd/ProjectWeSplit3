@@ -11,15 +11,16 @@ struct ContentView: View {
     
     @State private var checkAmount = 0.0
     @State private var numberOfPeople = 2
-    @State private var tipPerecentage = 20
+    @State private var tipPercentage = 20
     @FocusState private var amountIsFocused: Bool
+    
     
     let tipPerecentages = [15, 20, 25, 0]
     
     //MARK: Calculate the total amount per person
     var totalPerPerson: Double {
         let peopleCount = Double(numberOfPeople + 2)
-        let tipSelection = Double(tipPerecentage)
+        let tipSelection = Double(tipPercentage)
         
         let tipValue = checkAmount / 100 * tipSelection
         let grandTotal = checkAmount + tipValue
@@ -27,7 +28,13 @@ struct ContentView: View {
         
         return amountPerPerson
     }
-    
+    //MARK: Challenge 2. Add another section showing the total amount for the check – i.e., the original amount plus tip value, without dividing by the number of people.
+    var checkGrandTotal: Double {
+        let tipSelection = Double(tipPercentage)
+        let tipValue = checkAmount / 100 * tipSelection
+        let grandTotal = checkAmount + tipValue
+        return grandTotal
+    }
     
     var body: some View {
         NavigationView {
@@ -43,7 +50,7 @@ struct ContentView: View {
                     }
                 }
                 Section {
-                    Picker("Tip perecentage", selection: $tipPerecentage) {
+                    Picker("Tip perecentage", selection: $tipPercentage) {
                         ForEach(tipPerecentages, id: \.self) {
                             Text($0, format: .percent)
                         }
@@ -55,9 +62,18 @@ struct ContentView: View {
                     Text("How much tip do you want to leave?")
                 }
                 
+                Section {
+                    Text(checkGrandTotal, format: .currency(code: Locale.current.currencyCode ?? "USD"))
+                } header: {
+                    Text("Check aamounm with tip value")
+                }
+                
                 
                 Section {
                     Text(totalPerPerson, format: .currency(code: Locale.current.currencyCode ?? "USD"))
+                    //MARK: Challenge 1. Add a header to the third section, saying “Amount per person”
+                } header: {
+                    Text("Amount per person")
                 }
             }
             .navigationTitle("We Split")
